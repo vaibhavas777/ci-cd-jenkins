@@ -21,7 +21,7 @@ class CiCdDemoApplicationTests {
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/greetings/{name}", name))
 				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.content().string("Hi "  +name+ " welcome to the CI/CD demo project with jenkins"));
+				.andExpect(MockMvcResultMatchers.content().string("Hi "  +name+ " welcome to the CI/CD demo project with jenkins."));
 	}
 
 }
