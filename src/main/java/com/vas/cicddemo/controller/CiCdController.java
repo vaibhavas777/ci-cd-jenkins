@@ -10,6 +10,6 @@ public class CiCdController {
 
     @GetMapping("/greetings/{name}")
     public String greetings(@PathVariable String name){
-      return "Hi "  +name+ " welcome to the CI/CD demo project with jenkins";
+      return "Hi "  +name+ " welcome to the CI/CD demo project with jenkins.";
     }
 }
