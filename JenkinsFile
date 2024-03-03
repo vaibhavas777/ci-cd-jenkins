@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    tools{
+        maven 'maven'
+    }
+
+    stages {
+
+        stage("GIT SCM Checkout") {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vaibhavas777/ci-cd-jenkins.git']])
+            }
+        }
+
+        stage("Build Process"){
+            steps{
+                script{
+                    bat 'mvn clean install'
+                }
+            }
+        }
+
+        stage("Deploy to the container"){
+            steps{
+                deploy adapters: [tomcat9(credentialsId: 'tomcat-pwd', path: '', url: 'http://localhost:8080/')], contextPath: 'JenkinsCiCd', war: '**/*.war'
+            }
+        }
+
+    }
+
+  post{
+     always{
+        emailext attachLog: true,
+        body: '''<html>
+<head>
+  <title>Jenkins Build Notification</title>
+</head>
+<body>
+  <h2>Jenkins Build Notification</h2>
+
+  <p>Build Status: ${BUILD_STATUS}</p>
+  <p>Build Number: ${BUILD_NUMBER}</p>
+  <p>Build URL: <a href="${BUILD_URL}">${BUILD_URL}</a></p>
+
+  <h3>Console Output:</h3>
+  <pre>${BUILD_LOG}</pre>
+</body>
+</html>
+''', mimeType: 'text/html', replyTo: 'vaibhav.mitujjain07@gmail.com',
+subject: 'Pipeline status : ${BUILD_NUMBER}', to: 'vaibhav.mitujjain07@gmail.com'
+            }
+        }
+}
